@@ -1,15 +1,15 @@
 import _ from 'lodash';
 
 const getKeyStatus = (key, object1, object2) => {
-    if (_.has(object1, key) && _.has(object2, key)) {
-      if (object1[key] === object2[key]) {
-        return 'unchanged';
-      }
-      return 'changed';
-    } else if (!_.has(object1, key)) {
-      return 'added';
+  if (_.has(object1, key) && _.has(object2, key)) {
+    if (object1[key] === object2[key]) {
+      return 'unchanged';
     }
-    return 'deleted';
+    return 'changed';
+  } if (!_.has(object1, key)) {
+    return 'added';
+  }
+  return 'deleted';
 };
 
 const findDifference = (object1, object2) => {
@@ -31,7 +31,7 @@ const findDifference = (object1, object2) => {
         acc[`- ${key}`] = object1[key];
         break;
       default:
-        return 'no such key'
+        return 'no such key';
     }
     return acc;
   }, {});
