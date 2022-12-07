@@ -9,7 +9,7 @@ const genDiff = (filePath1, filePath2) => {
   const object2 = JSON.parse(readFileSync(resolve(cwd(), filePath2)));
   const difference = findDifference(object1, object2);
   const objectsAsString = stringifyObject(difference);
-  console.log(objectsAsString);
+  return objectsAsString;
 };
 
 export default genDiff;
