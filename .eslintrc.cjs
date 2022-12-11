@@ -12,6 +12,6 @@ module.exports = {
     ecmaVersion: 2020,
   },
   rules: {
-    no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
+    "no-underscore-dangle": [2, { "allow": ["__filename", "__dirname"] }]
   },
 };

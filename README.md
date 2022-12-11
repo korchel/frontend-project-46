@@ -4,3 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/ce03d657c154cbe146a7/maintainability)](https://codeclimate.com/github/korchel/frontend-project-46/maintainability)
 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/ce03d657c154cbe146a7/test_coverage)](https://codeclimate.com/github/korchel/frontend-project-46/test_coverage)
+
+
+### Compare two flat files
+[![asciicast](https://asciinema.org/a/ELUG4Xow4C2YefJ7GgPGz4GzV.svg)](https://asciinema.org/a/ELUG4Xow4C2YefJ7GgPGz4GzV)
