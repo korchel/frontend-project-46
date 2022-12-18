@@ -30,7 +30,7 @@
     "gendiff": "bin/gendiff.js"
   },
   "devDependencies": {
-    "eslint": "^8.29.0",
+    "eslint": "^8.30.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.1.6",
