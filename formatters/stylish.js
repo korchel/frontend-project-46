@@ -1,18 +1,7 @@
 import _ from 'lodash';
+import { getKeyStatus } from './applyFormat.js';
 
-const getKeyStatus = (key, object1, object2) => {
-  if (_.has(object1, key) && _.has(object2, key)) {
-    if (object1[key] === object2[key]) {
-      return 'unchanged';
-    }
-    return 'changed';
-  } if (!_.has(object1, key)) {
-    return 'added';
-  }
-  return 'deleted';
-};
-
-const findDifference = (object1, object2) => {
+const applyStylishFormat = (object1, object2) => {
   const keys = _.union(_.keys(object1), _.keys(object2));
   const diff = keys.reduce((acc, key) => {
     const checkKey = getKeyStatus(key, object1, object2);
@@ -21,8 +10,12 @@ const findDifference = (object1, object2) => {
         acc[`  ${key}`] = object1[key];
         break;
       case 'changed':
-        acc[`- ${key}`] = object1[key];
-        acc[`+ ${key}`] = object2[key];
+        if (_.isObject(object1[key])) {
+          acc[`  ${key}`] = applyStylishFormat(object1[key], object2[key]);
+        } else {
+          acc[`- ${key}`] = object1[key];
+          acc[`+ ${key}`] = object2[key];
+        }
         break;
       case 'added':
         acc[`+ ${key}`] = object2[key];
@@ -38,4 +31,4 @@ const findDifference = (object1, object2) => {
   return diff;
 };
 
-export default findDifference;
+export default applyStylishFormat;
