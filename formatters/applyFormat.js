@@ -15,18 +15,18 @@ const getKeyStatus = (key, object1, object2) => {
 
 const stringifyObject = (object) => {
   const iter = (data, level) => {
-    const entries = _.sortBy(Object.entries(data), (entry) => entry[0][2]);
-    const entriesToStrings = entries.map(([key, value]) => {
+    const currentIndent = '  '.repeat(level);
+    const closingBracketIndent = '  '.repeat(level - 1);
+    const entries = Object.entries(data);
+    const lines = entries.map(([key, value]) => {
       if (_.isObject(value)) {
-        return `${key}: ${iter(value, level + 1)}`;
+        return `${currentIndent}${key}: ${iter(value, level + 2)}`;
       }
-      return `${key}: ${value}`;
+      return `${currentIndent}${key}: ${value}`;
     });
-    const currentIndent = '  '.repeat(level + 1);
-    const closingBracketIndent = '  '.repeat(level);
-    return `{\n${currentIndent}${entriesToStrings.join(`\n${currentIndent}`)}\n${closingBracketIndent}}`;
+    return `{\n${lines.join('\n')}\n${closingBracketIndent}}`;
   };
-  return iter(object, 0);
+  return iter(object, 1);
 };
 
 const applyFormat = (object1, object2, format) => {
