@@ -6,7 +6,8 @@ const getKeyStatus = (key, object1, object2) => {
       return 'unchanged';
     }
     return 'changed';
-  } if (!_.has(object1, key)) {
+  }
+  if (!_.has(object1, key)) {
     return 'added';
   }
   return 'deleted';
@@ -15,8 +16,8 @@ const getKeyStatus = (key, object1, object2) => {
 const applyStylishFormat = (object1, object2) => {
   const keys = _.sortBy(_.union(_.keys(object1), _.keys(object2)), (key) => key);
   const diff = keys.reduce((acc, key) => {
-    const checkKey = getKeyStatus(key, object1, object2);
-    switch (checkKey) {
+    const keyStatus = getKeyStatus(key, object1, object2);
+    switch (keyStatus) {
       case 'unchanged':
         acc[`  ${key}`] = _.isObject(object1[key]) ? applyStylishFormat(object1[key], object1[key]) : object1[key];
         break;
@@ -35,7 +36,7 @@ const applyStylishFormat = (object1, object2) => {
         acc[`- ${key}`] = _.isObject(object1[key]) ? applyStylishFormat(object1[key], object1[key]) : object1[key];
         break;
       default:
-        return 'no such key';
+        return 'no such keySatus';
     }
     return acc;
   }, {});

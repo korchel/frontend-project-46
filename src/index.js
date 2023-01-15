@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { cwd } from 'process';
-import applyFormat from '../formatters/applyFormat.js';
+import applyFormat from '../formatters/index.js';
 import parse from './parcers.js';
 
 const genDiff = (filePath1, filePath2, format = 'stylish') => {
