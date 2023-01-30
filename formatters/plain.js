@@ -1,32 +1,36 @@
 import _ from 'lodash';
 
-const getKeyStatus = (key, object1, object2) => {
-  if (_.has(object1, key) && _.has(object2, key)) {
-    if (_.isEqual(object1[key], object2[key])) {
-      return 'unchanged';
-    }
-    return 'changed';
-  }
-  if (!_.has(object1, key)) {
-    return 'added';
-  }
-  return 'deleted';
-};
-
-
-
-const applyPlainFormat = (object1, object2) => {
-  const keys = _.sortBy(_.union(_.keys(object1), _.keys(object2)), (key) => key);
-  const diff = keys.reduce((acc, key) => {
-    const keyStatus = getKeyStatus(key, object1, object2);
-    switch (keyStatus) {
+const applyPlainFormat = (trees) => {
+  const iter = (tree, path) => {
+    const treeName = tree.name;
+    const treeStatus = tree.status;
+    const treePreviousValue = tree.previousValue;
+    const treeCurrentValue = tree.currentValue;
+    path.push(treeName);
+    switch (treeStatus) {
       case 'unchanged':
         break;
-      case 'changed':
-        break;
-      case ...
+      case 'updated':
+        if (Array.isArray(treeCurrentValue)) {
+          return treeCurrentValue.map((node) => iter(node, [...path]));
+        }
+        return _.isObject(tree.previousValue)
+          ? `Property '${path.join('.')}' was updated. From [complex value] to '${treeCurrentValue}'\n`
+          : `Property '${path.join('.')}' was updated. From '${treePreviousValue}' to '${treeCurrentValue}'\n`;
+      case 'added':
+        return _.isObject(treeCurrentValue)
+          ? `Property '${path.join('.')}' was added with value: [complex value]\n`
+          : `Property '${path.join('.')}' was added with value: '${treeCurrentValue}'\n`;
+      case 'removed':
+        return `Property '${path.join('.')}' was removed\n`;
+      default:
+        return 'no such treeStatus';
     }
-    return acc;
-  }, '')
-  return diff;
+  };
+  return trees.reduce((lines, tree) => {
+    const treeLines = iter(tree, []);
+    return `${lines}${treeLines}`;
+  }, '');
 };
+
+export default applyPlainFormat;
