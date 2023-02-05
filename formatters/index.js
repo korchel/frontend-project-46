@@ -6,7 +6,7 @@ import buildASTs from './buildASTs.js';
 const applyFormat = (object1, object2, format) => {
   switch (format) {
     case 'stylish':
-      break;
+      return applyStylishFormat(buildASTs(object1, object2));
     case 'plain':
       return applyPlainFormat(buildASTs(object1, object2));
     default:
