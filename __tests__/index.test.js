@@ -15,6 +15,7 @@ const filePath3 = getFixturePath('file3.yml');
 const filePath4 = getFixturePath('file4.yml');
 const expectedResultForStylish = fs.readFileSync(getFixturePath('expectedResultForStylish.txt'), 'utf8');
 const expectedResultForPlain = fs.readFileSync(getFixturePath('expectedResultForPlain.txt'), 'utf8');
+const expectedResultForJson = fs.readFileSync(getFixturePath('expectedResultForJson.txt'), 'utf8');
 
 test('genDiff in json files in stylish format', () => {
   expect(genDiff(filePath1, filePath2)).toEqual(expectedResultForStylish);
@@ -38,4 +39,16 @@ test('genDiff in yaml files in plain format', () => {
 
 test('genDiff in yaml and json files in plain format', () => {
   expect(genDiff(filePath1, filePath4, 'plain')).toEqual(expectedResultForPlain);
+});
+
+test('genDiff in json files in json format', () => {
+  expect(genDiff(filePath1, filePath2, 'json')).toEqual(expectedResultForJson);
+});
+
+test('genDiff in yaml files in json format', () => {
+  expect(genDiff(filePath3, filePath4, 'json')).toEqual(expectedResultForJson);
+});
+
+test('genDiff in yaml and json files in json format', () => {
+  expect(genDiff(filePath1, filePath4, 'json')).toEqual(expectedResultForJson);
 });

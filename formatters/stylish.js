@@ -45,8 +45,8 @@ const applyStylishFormat = (trees) => {
     }
   };
   const lines = trees.reduce((acc, tree) => {
-    const treelines = stringifyTree(tree, 1);
-    return `${acc}\n${treelines}`;
+    const treeLines = stringifyTree(tree, 1);
+    return `${acc}\n${treeLines}`;
   }, '');
   return `{${lines}\n}`;
 };

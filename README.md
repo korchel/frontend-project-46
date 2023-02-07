@@ -6,5 +6,11 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/ce03d657c154cbe146a7/test_coverage)](https://codeclimate.com/github/korchel/frontend-project-46/test_coverage)
 
 
-### Compare two files
+### stylish format
 [![asciicast](https://asciinema.org/a/F6tmqKx0w1oNPXR36wpdkZmZb.svg)](https://asciinema.org/a/F6tmqKx0w1oNPXR36wpdkZmZb)
+
+### plain format
+[![asciicast](https://asciinema.org/a/KgtpRnlNYnwFhklZkv3srLWqA.svg)](https://asciinema.org/a/KgtpRnlNYnwFhklZkv3srLWqA)
+
+### json format
+[![asciicast](https://asciinema.org/a/ElLS4YamWglkHseYDiY6g3q5g.svg)](https://asciinema.org/a/ElLS4YamWglkHseYDiY6g3q5g)

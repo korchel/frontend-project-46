@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-const addQuotes = (value) => (typeof value === 'string' ? `'${value}'` : value);
-
 const applyPlainFormat = (trees) => {
+  const addQuotes = (value) => (typeof value === 'string' ? `'${value}'` : value);
+
   const iter = (tree, path) => {
     const treeName = tree.name;
     const treeStatus = tree.status;
