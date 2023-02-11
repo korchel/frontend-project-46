@@ -1,13 +1,16 @@
 import { load } from 'js-yaml';
 
-const parse = (file, fileType) => {
-  if (fileType === 'json') {
-    return JSON.parse(file);
+const parse = (data, dataType) => {
+  switch (dataType) {
+    case '.json':
+      return JSON.parse(data);
+    case '.yml':
+      return load(data);
+    case '.yaml':
+      return load(data);
+    default:
+      throw new Error('Unknown data type!');
   }
-  if (fileType === 'yml' || fileType === 'yaml') {
-    return load(file);
-  }
-  return 'Unknown file type';
 };
 
 export default parse;

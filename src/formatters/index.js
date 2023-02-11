@@ -1,7 +1,6 @@
 import applyStylishFormat from './stylish.js';
 import applyPlainFormat from './plain.js';
-import buildASTs from './buildASTs.js';
-import applyJSONFormat from './json.js';
+import buildASTs from '../buildASTs.js';
 
 const applyFormat = (object1, object2, format) => {
   const trees = buildASTs(object1, object2);
@@ -11,9 +10,9 @@ const applyFormat = (object1, object2, format) => {
     case 'plain':
       return applyPlainFormat(trees);
     case 'json':
-      return applyJSONFormat(trees);
+      return JSON.stringify(trees);
     default:
-      return 'Unknown format';
+      throw new Error('Unknown format!');
   }
 };
 

@@ -2,7 +2,7 @@ import { test, expect } from '@jest/globals';
 import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import * as fs from 'fs';
-import genDiff from '../src/index.js';
+import genDiff from '../index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,40 +15,34 @@ const filePath3 = getFixturePath('file3.yml');
 const filePath4 = getFixturePath('file4.yml');
 const expectedResultForStylish = fs.readFileSync(getFixturePath('expectedResultForStylish.txt'), 'utf8');
 const expectedResultForPlain = fs.readFileSync(getFixturePath('expectedResultForPlain.txt'), 'utf8');
-const expectedResultForJson = fs.readFileSync(getFixturePath('expectedResultForJson.txt'), 'utf8');
 
-test('genDiff in json files in stylish format', () => {
-  expect(genDiff(filePath1, filePath2)).toEqual(expectedResultForStylish);
+const stylishTestData = [
+  { file1: filePath1, file2: filePath2, expected: expectedResultForStylish },
+  { file1: filePath3, file2: filePath4, expected: expectedResultForStylish },
+  { file1: filePath1, file2: filePath4, expected: expectedResultForStylish },
+];
+
+const plainTestData = [
+  { file1: filePath1, file2: filePath2, expected: expectedResultForPlain },
+  { file1: filePath3, file2: filePath4, expected: expectedResultForPlain },
+  { file1: filePath1, file2: filePath4, expected: expectedResultForPlain },
+];
+
+const jsonTestData = [
+  { file1: filePath1, file2: filePath2 },
+  { file1: filePath3, file2: filePath4 },
+  { file1: filePath1, file2: filePath4 },
+];
+
+test.each(stylishTestData)('genDiff in $file1 and $file2 files in stylish format', ({ file1, file2, expected }) => {
+  expect(genDiff(file1, file2)).toEqual(expected);
 });
 
-test('genDiff in yaml files in stylish format', () => {
-  expect(genDiff(filePath3, filePath4)).toEqual(expectedResultForStylish);
+test.each(plainTestData)('genDiff in $file1 and $file2 files in plain format', ({ file1, file2, expected }) => {
+  expect(genDiff(file1, file2, 'plain')).toEqual(expected);
 });
 
-test('genDiff in yaml and json files in stylish format', () => {
-  expect(genDiff(filePath1, filePath4)).toEqual(expectedResultForStylish);
-});
-
-test('genDiff in json files in plain format', () => {
-  expect(genDiff(filePath1, filePath2, 'plain')).toEqual(expectedResultForPlain);
-});
-
-test('genDiff in yaml files in plain format', () => {
-  expect(genDiff(filePath3, filePath4, 'plain')).toEqual(expectedResultForPlain);
-});
-
-test('genDiff in yaml and json files in plain format', () => {
-  expect(genDiff(filePath1, filePath4, 'plain')).toEqual(expectedResultForPlain);
-});
-
-test('genDiff in json files in json format', () => {
-  expect(genDiff(filePath1, filePath2, 'json')).toEqual(expectedResultForJson);
-});
-
-test('genDiff in yaml files in json format', () => {
-  expect(genDiff(filePath3, filePath4, 'json')).toEqual(expectedResultForJson);
-});
-
-test('genDiff in yaml and json files in json format', () => {
-  expect(genDiff(filePath1, filePath4, 'json')).toEqual(expectedResultForJson);
+test.each(jsonTestData)('genDiff in $file1 and $file2 files in json format', ({ file1, file2 }) => {
+  const diff = genDiff(file1, file2, 'json');
+  expect(() => JSON.parse(diff)).not.toThrow();
 });

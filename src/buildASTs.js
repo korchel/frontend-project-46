@@ -22,28 +22,28 @@ const buildASTs = (object1, object2) => {
       case 'unchanged':
         node.name = key;
         node.status = keyStatus;
-        node.currentValue = object1[key];
+        node.value2 = object1[key];
         return node;
       case 'updated':
         node.name = key;
         node.status = keyStatus;
-        node.previousValue = object1[key];
-        node.currentValue = (_.isObject(object1[key]) && _.isObject(object2[key])
+        node.value1 = object1[key];
+        node.value2 = (_.isObject(object1[key]) && _.isObject(object2[key])
           ? buildASTs(object1[key], object2[key])
           : object2[key]);
         return node;
       case 'added':
         node.name = key;
         node.status = keyStatus;
-        node.currentValue = object2[key];
+        node.value2 = object2[key];
         return node;
       case 'removed':
         node.name = key;
         node.status = keyStatus;
-        node.previousValue = object1[key];
+        node.value1 = object1[key];
         return node;
       default:
-        return 'no such keySatus';
+        throw new Error('There is no such key status!');
     }
   }, {});
   return astTrees;
