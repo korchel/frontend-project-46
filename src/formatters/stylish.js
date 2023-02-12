@@ -2,6 +2,9 @@ import _ from 'lodash';
 
 const applyStylishFormat = (trees) => {
   const stringifyObject = (object, depth) => {
+    if (!_.isObject(object)) {
+      return object;
+    }
     const currentIndent = '  '.repeat(depth);
     const closingBracketIndent = '  '.repeat(depth - 2);
     const entries = Object.entries(object);
@@ -30,17 +33,11 @@ const applyStylishFormat = (trees) => {
         if (Array.isArray(treeValue2)) {
           return `${currentIndent}  ${treeName}: {\n${treeValue2.map((node) => stringifyTree(node, depth + 2)).join('\n')}\n${closingBracketIndent}}`;
         }
-        return _.isObject(treeValue1)
-          ? `${currentIndent}- ${treeName}: ${stringifyObject(treeValue1, depth + 3)}\n${currentIndent}+ ${treeName}: ${treeValue2}`
-          : `${currentIndent}- ${treeName}: ${treeValue1}\n${currentIndent}+ ${treeName}: ${treeValue2}`;
+        return `${currentIndent}- ${treeName}: ${stringifyObject(treeValue1, depth + 3)}\n${currentIndent}+ ${treeName}: ${stringifyObject(treeValue2, depth + 3)}`;
       case 'added':
-        return _.isObject(treeValue2)
-          ? `${currentIndent}+ ${treeName}: ${stringifyObject(treeValue2, depth + 3)}`
-          : `${currentIndent}+ ${treeName}: ${treeValue2}`;
+        return `${currentIndent}+ ${treeName}: ${stringifyObject(treeValue2, depth + 3)}`;
       case 'removed':
-        return _.isObject(treeValue1)
-          ? `${currentIndent}- ${treeName}: ${stringifyObject(treeValue1, depth + 3)}`
-          : `${currentIndent}- ${treeName}: ${treeValue1}`;
+        return `${currentIndent}- ${treeName}: ${stringifyObject(treeValue1, depth + 3)}`;
       default:
         throw new Error('No such tree status!');
     }
