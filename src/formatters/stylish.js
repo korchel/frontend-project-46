@@ -18,26 +18,22 @@ const applyStylishFormat = (trees) => {
   };
 
   const stringifyTree = (tree, depth) => {
-    const treeName = tree.name;
-    const treeStatus = tree.status;
-    const treeValue1 = tree.value1;
-    const treeValue2 = tree.value2;
     const currentIndent = '  '.repeat(depth);
     const closingBracketIndent = '  '.repeat(depth + 1);
-    switch (treeStatus) {
+    switch (tree.status) {
       case 'unchanged':
-        return _.isObject(treeValue1)
-          ? `${currentIndent}  ${treeName}:\n${stringifyObject(treeValue2, depth + 2)}`
-          : `${currentIndent}  ${treeName}: ${treeValue2}`;
+        return _.isObject(tree.value1)
+          ? `${currentIndent}  ${tree.name}:\n${stringifyObject(tree.value2, depth + 2)}`
+          : `${currentIndent}  ${tree.name}: ${tree.value2}`;
       case 'updated':
-        if (Array.isArray(treeValue2)) {
-          return `${currentIndent}  ${treeName}: {\n${treeValue2.map((node) => stringifyTree(node, depth + 2)).join('\n')}\n${closingBracketIndent}}`;
+        if (Array.isArray(tree.value2)) {
+          return `${currentIndent}  ${tree.name}: {\n${tree.value2.map((node) => stringifyTree(node, depth + 2)).join('\n')}\n${closingBracketIndent}}`;
         }
-        return `${currentIndent}- ${treeName}: ${stringifyObject(treeValue1, depth + 3)}\n${currentIndent}+ ${treeName}: ${stringifyObject(treeValue2, depth + 3)}`;
+        return `${currentIndent}- ${tree.name}: ${stringifyObject(tree.value1, depth + 3)}\n${currentIndent}+ ${tree.name}: ${stringifyObject(tree.value2, depth + 3)}`;
       case 'added':
-        return `${currentIndent}+ ${treeName}: ${stringifyObject(treeValue2, depth + 3)}`;
+        return `${currentIndent}+ ${tree.name}: ${stringifyObject(tree.value2, depth + 3)}`;
       case 'removed':
-        return `${currentIndent}- ${treeName}: ${stringifyObject(treeValue1, depth + 3)}`;
+        return `${currentIndent}- ${tree.name}: ${stringifyObject(tree.value1, depth + 3)}`;
       default:
         throw new Error('No such tree status!');
     }

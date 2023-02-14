@@ -12,21 +12,17 @@ const applyPlainFormat = (trees) => {
   };
 
   const iter = (tree, path) => {
-    const treeName = tree.name;
-    const treeStatus = tree.status;
-    const treeValue1 = tree.value1;
-    const treeValue2 = tree.value2;
-    const fullPath = [...path, treeName];
-    switch (treeStatus) {
+    const fullPath = [...path, tree.name];
+    switch (tree.status) {
       case 'unchanged':
         return null;
       case 'updated':
-        if (Array.isArray(treeValue2)) {
-          return treeValue2.map((node) => iter(node, [...fullPath]));
+        if (Array.isArray(tree.value2)) {
+          return tree.value2.map((node) => iter(node, [...fullPath]));
         }
-        return `Property '${fullPath.join('.')}' was updated. From ${stringify(treeValue1)} to ${stringify(treeValue2)}`;
+        return `Property '${fullPath.join('.')}' was updated. From ${stringify(tree.value1)} to ${stringify(tree.value2)}`;
       case 'added':
-        return `Property '${fullPath.join('.')}' was added with value: ${stringify(treeValue2)}`;
+        return `Property '${fullPath.join('.')}' was added with value: ${stringify(tree.value2)}`;
       case 'removed':
         return `Property '${fullPath.join('.')}' was removed`;
       default:
