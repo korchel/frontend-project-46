@@ -30,6 +30,7 @@ const buildASTs = (object1, object2) => {
       name, status, value1, value2,
     };
   }, {});
+
   return astTrees;
 };
 

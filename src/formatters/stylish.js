@@ -1,16 +1,16 @@
 import _ from 'lodash';
 
 const applyStylishFormat = (trees) => {
-  const stringifyObject = (object, depth) => {
-    if (!_.isObject(object)) {
-      return object;
+  const stringify = (data, depth) => {
+    if (!_.isObject(data)) {
+      return data;
     }
-    const currentIndent = '  '.repeat(depth);
-    const closingBracketIndent = '  '.repeat(depth - 2);
-    const entries = Object.entries(object);
+    const currentIndent = ' '.repeat(depth * 4);
+    const closingBracketIndent = ' '.repeat((depth - 1) * 4);
+    const entries = Object.entries(data);
     const lines = entries.map(([key, value]) => {
       if (_.isObject(value)) {
-        return `${currentIndent}${key}: ${stringifyObject(value, depth + 2)}`;
+        return `${currentIndent}${key}: ${stringify(value, depth + 1)}`;
       }
       return `${currentIndent}${key}: ${value}`;
     });
@@ -18,22 +18,21 @@ const applyStylishFormat = (trees) => {
   };
 
   const stringifyTree = (tree, depth) => {
-    const currentIndent = '  '.repeat(depth);
-    const closingBracketIndent = '  '.repeat(depth + 1);
+    const currentIndent = ' '.repeat(2 + (depth - 1) * 4);
+    const closingBracketIndent = ' '.repeat(depth * 4);
+
     switch (tree.status) {
       case 'unchanged':
-        return _.isObject(tree.value1)
-          ? `${currentIndent}  ${tree.name}:\n${stringifyObject(tree.value2, depth + 2)}`
-          : `${currentIndent}  ${tree.name}: ${tree.value2}`;
+        return `${currentIndent}  ${tree.name}: ${stringify(tree.value2, depth + 1)}`;
       case 'updated':
         if (Array.isArray(tree.value2)) {
-          return `${currentIndent}  ${tree.name}: {\n${tree.value2.map((node) => stringifyTree(node, depth + 2)).join('\n')}\n${closingBracketIndent}}`;
+          return `${currentIndent}  ${tree.name}: {\n${tree.value2.map((node) => stringifyTree(node, depth + 1)).join('\n')}\n${closingBracketIndent}}`;
         }
-        return `${currentIndent}- ${tree.name}: ${stringifyObject(tree.value1, depth + 3)}\n${currentIndent}+ ${tree.name}: ${stringifyObject(tree.value2, depth + 3)}`;
+        return `${currentIndent}- ${tree.name}: ${stringify(tree.value1, depth + 1)}\n${currentIndent}+ ${tree.name}: ${stringify(tree.value2, depth + 1)}`;
       case 'added':
-        return `${currentIndent}+ ${tree.name}: ${stringifyObject(tree.value2, depth + 3)}`;
+        return `${currentIndent}+ ${tree.name}: ${stringify(tree.value2, depth + 1)}`;
       case 'removed':
-        return `${currentIndent}- ${tree.name}: ${stringifyObject(tree.value1, depth + 3)}`;
+        return `${currentIndent}- ${tree.name}: ${stringify(tree.value1, depth + 1)}`;
       default:
         throw new Error('No such tree status!');
     }
