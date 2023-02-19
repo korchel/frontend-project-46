@@ -8,12 +8,12 @@ const applyPlainFormat = (trees) => {
     if (_.isObject(value)) {
       return '[complex value]';
     }
-    return value;
+    return String(value);
   };
 
   const iter = (tree, path) => {
-    const fullPath = [...path, tree.name];
-    switch (tree.status) {
+    const fullPath = [...path, tree.keyName];
+    switch (tree.keyStatus) {
       case 'unchanged':
         return null;
       case 'updated':
@@ -26,7 +26,7 @@ const applyPlainFormat = (trees) => {
       case 'removed':
         return `Property '${fullPath.join('.')}' was removed`;
       default:
-        return 'no such treeStatus';
+        return `Unknown treeKeyStatus ${tree.keyStatus}`;
     }
   };
   return trees.reduce((lines, tree) => {

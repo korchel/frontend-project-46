@@ -21,20 +21,20 @@ const applyStylishFormat = (trees) => {
     const currentIndent = ' '.repeat(2 + (depth - 1) * 4);
     const closingBracketIndent = ' '.repeat(depth * 4);
 
-    switch (tree.status) {
+    switch (tree.keyStatus) {
       case 'unchanged':
-        return `${currentIndent}  ${tree.name}: ${stringify(tree.value2, depth + 1)}`;
+        return `${currentIndent}  ${tree.keyName}: ${stringify(tree.value, depth + 1)}`;
       case 'updated':
         if (Array.isArray(tree.value2)) {
-          return `${currentIndent}  ${tree.name}: {\n${tree.value2.map((node) => stringifyTree(node, depth + 1)).join('\n')}\n${closingBracketIndent}}`;
+          return `${currentIndent}  ${tree.keyName}: {\n${tree.value2.map((node) => stringifyTree(node, depth + 1)).join('\n')}\n${closingBracketIndent}}`;
         }
-        return `${currentIndent}- ${tree.name}: ${stringify(tree.value1, depth + 1)}\n${currentIndent}+ ${tree.name}: ${stringify(tree.value2, depth + 1)}`;
+        return `${currentIndent}- ${tree.keyName}: ${stringify(tree.value1, depth + 1)}\n${currentIndent}+ ${tree.keyName}: ${stringify(tree.value2, depth + 1)}`;
       case 'added':
-        return `${currentIndent}+ ${tree.name}: ${stringify(tree.value2, depth + 1)}`;
+        return `${currentIndent}+ ${tree.keyName}: ${stringify(tree.value2, depth + 1)}`;
       case 'removed':
-        return `${currentIndent}- ${tree.name}: ${stringify(tree.value1, depth + 1)}`;
+        return `${currentIndent}- ${tree.keyName}: ${stringify(tree.value1, depth + 1)}`;
       default:
-        throw new Error('No such tree status!');
+        throw new Error(`Unknown treeKeyStatus ${tree.keyStatus}`);
     }
   };
   const lines = trees.reduce((acc, tree) => {

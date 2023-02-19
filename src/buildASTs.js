@@ -14,21 +14,41 @@ const getKeyStatus = (key, object1, object2) => {
 };
 
 const buildASTs = (object1, object2) => {
-  const keys = _.sortBy(_.union(_.keys(object1), _.keys(object2)));
+  const keyNames = _.sortBy(_.union(_.keys(object1), _.keys(object2)));
 
-  const astTrees = keys.map((key) => {
-    const keyStatus = getKeyStatus(key, object1, object2);
-
-    const name = key;
-    const status = keyStatus;
-    const value1 = object1[key];
-    const value2 = (_.isObject(object1[key]) && _.isObject(object2[key])
-      ? buildASTs(object1[key], object2[key])
-      : object2[key]);
-
-    return {
-      name, status, value1, value2,
-    };
+  const astTrees = keyNames.map((keyName) => {
+    const keyStatus = getKeyStatus(keyName, object1, object2);
+    switch (keyStatus) {
+      case 'unchanged':
+        return {
+          keyName, keyStatus, value: object1[keyName],
+        };
+      case 'updated':
+        return {
+          keyName,
+          keyStatus,
+          value1: object1[keyName],
+          value2: (_.isObject(object1[keyName]) && _.isObject(object2[keyName])
+            ? buildASTs(object1[keyName], object2[keyName])
+            : object2[keyName]),
+        };
+      case 'added':
+        return {
+          keyName,
+          keyStatus,
+          value2: (_.isObject(object1[keyName]) && _.isObject(object2[keyName])
+            ? buildASTs(object1[keyName], object2[keyName])
+            : object2[keyName]),
+        };
+      case 'removed':
+        return {
+          keyName,
+          keyStatus,
+          value1: object1[keyName],
+        };
+      default:
+        throw new Error(`Unknown treeKeyStatus ${keyStatus}`);
+    }
   }, {});
 
   return astTrees;

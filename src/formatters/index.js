@@ -12,7 +12,7 @@ const applyFormat = (object1, object2, format) => {
     case 'json':
       return JSON.stringify(trees);
     default:
-      throw new Error('Unknown format!');
+      throw new Error(`Unknown format ${format}`);
   }
 };
 
