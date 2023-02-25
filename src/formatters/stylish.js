@@ -5,8 +5,10 @@ const applyStylishFormat = (trees) => {
     if (!_.isObject(data)) {
       return data;
     }
-    const currentIndent = ' '.repeat(depth * 4);
-    const closingBracketIndent = ' '.repeat((depth - 1) * 4);
+
+    const currentIndent = ' '.repeat((depth + 1) * 4);
+    const closingBracketIndent = ' '.repeat(depth * 4);
+
     const entries = Object.entries(data);
     const lines = entries.map(([key, value]) => {
       if (_.isObject(value)) {
@@ -18,8 +20,8 @@ const applyStylishFormat = (trees) => {
   };
 
   const stringifyTree = (tree, depth) => {
-    const currentIndent = ' '.repeat(2 + (depth - 1) * 4);
-    const closingBracketIndent = ' '.repeat(depth * 4);
+    const currentIndent = ' '.repeat(2 + depth * 4);
+    const closingBracketIndent = ' '.repeat((depth + 1) * 4);
 
     switch (tree.keyStatus) {
       case 'unchanged':
@@ -37,8 +39,9 @@ const applyStylishFormat = (trees) => {
         throw new Error(`Unknown treeKeyStatus ${tree.keyStatus}`);
     }
   };
+
   const lines = trees.reduce((acc, tree) => {
-    const treeLines = stringifyTree(tree, 1);
+    const treeLines = stringifyTree(tree, 0);
     return `${acc}\n${treeLines}`;
   }, '');
   return `{${lines}\n}`;

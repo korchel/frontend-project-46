@@ -26,9 +26,10 @@ const applyPlainFormat = (trees) => {
       case 'removed':
         return `Property '${fullPath.join('.')}' was removed`;
       default:
-        return `Unknown treeKeyStatus ${tree.keyStatus}`;
+        throw new Error(`Unknown treeKeyStatus ${tree.keyStatus}`);
     }
   };
+
   return trees.reduce((lines, tree) => {
     const treeLines = iter(tree, []);
     return _.flatten([...lines, treeLines]).filter((line) => line !== null);
