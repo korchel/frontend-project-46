@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const applyPlainFormat = (trees) => {
+const applyPlainFormat = (diffTree) => {
   const stringify = (value) => {
     if (typeof value === 'string') {
       return `'${value}'`;
@@ -11,27 +11,27 @@ const applyPlainFormat = (trees) => {
     return String(value);
   };
 
-  const iter = (tree, path) => {
-    const fullPath = [...path, tree.keyName];
-    switch (tree.keyStatus) {
+  const iter = (node, path) => {
+    const fullPath = [...path, node.keyName];
+    switch (node.keyStatus) {
       case 'unchanged':
         return null;
       case 'updated':
-        if (Array.isArray(tree.value2)) {
-          return tree.value2.map((node) => iter(node, [...fullPath]));
+        if (Array.isArray(node.value2)) {
+          return node.value2.map((item) => iter(item, [...fullPath]));
         }
-        return `Property '${fullPath.join('.')}' was updated. From ${stringify(tree.value1)} to ${stringify(tree.value2)}`;
+        return `Property '${fullPath.join('.')}' was updated. From ${stringify(node.value1)} to ${stringify(node.value2)}`;
       case 'added':
-        return `Property '${fullPath.join('.')}' was added with value: ${stringify(tree.value2)}`;
+        return `Property '${fullPath.join('.')}' was added with value: ${stringify(node.value)}`;
       case 'removed':
         return `Property '${fullPath.join('.')}' was removed`;
       default:
-        throw new Error(`Unknown treeKeyStatus ${tree.keyStatus}`);
+        throw new Error(`Unknown treeKeyStatus ${node.keyStatus}`);
     }
   };
 
-  return trees.reduce((lines, tree) => {
-    const treeLines = iter(tree, []);
+  return diffTree.reduce((lines, node) => {
+    const treeLines = iter(node, []);
     return _.flatten([...lines, treeLines]).filter((line) => line !== null);
   }, []).join('\n');
 };

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const applyStylishFormat = (trees) => {
+const applyStylishFormat = (diffTree) => {
   const stringify = (data, depth) => {
     if (!_.isObject(data)) {
       return data;
@@ -19,29 +19,29 @@ const applyStylishFormat = (trees) => {
     return `{\n${lines.join('\n')}\n${closingBracketIndent}}`;
   };
 
-  const stringifyTree = (tree, depth) => {
+  const stringifyTree = (node, depth) => {
     const currentIndent = ' '.repeat(2 + depth * 4);
     const closingBracketIndent = ' '.repeat((depth + 1) * 4);
 
-    switch (tree.keyStatus) {
+    switch (node.keyStatus) {
       case 'unchanged':
-        return `${currentIndent}  ${tree.keyName}: ${stringify(tree.value, depth + 1)}`;
+        return `${currentIndent}  ${node.keyName}: ${stringify(node.value, depth + 1)}`;
       case 'updated':
-        if (Array.isArray(tree.value2)) {
-          return `${currentIndent}  ${tree.keyName}: {\n${tree.value2.map((node) => stringifyTree(node, depth + 1)).join('\n')}\n${closingBracketIndent}}`;
+        if (Array.isArray(node.value2)) {
+          return `${currentIndent}  ${node.keyName}: {\n${node.value2.map((item) => stringifyTree(item, depth + 1)).join('\n')}\n${closingBracketIndent}}`;
         }
-        return `${currentIndent}- ${tree.keyName}: ${stringify(tree.value1, depth + 1)}\n${currentIndent}+ ${tree.keyName}: ${stringify(tree.value2, depth + 1)}`;
+        return `${currentIndent}- ${node.keyName}: ${stringify(node.value1, depth + 1)}\n${currentIndent}+ ${node.keyName}: ${stringify(node.value2, depth + 1)}`;
       case 'added':
-        return `${currentIndent}+ ${tree.keyName}: ${stringify(tree.value2, depth + 1)}`;
+        return `${currentIndent}+ ${node.keyName}: ${stringify(node.value, depth + 1)}`;
       case 'removed':
-        return `${currentIndent}- ${tree.keyName}: ${stringify(tree.value1, depth + 1)}`;
+        return `${currentIndent}- ${node.keyName}: ${stringify(node.value, depth + 1)}`;
       default:
-        throw new Error(`Unknown treeKeyStatus ${tree.keyStatus}`);
+        throw new Error(`Unknown treeKeyStatus ${node.keyStatus}`);
     }
   };
 
-  const lines = trees.reduce((acc, tree) => {
-    const treeLines = stringifyTree(tree, 0);
+  const lines = diffTree.reduce((acc, node) => {
+    const treeLines = stringifyTree(node, 0);
     return `${acc}\n${treeLines}`;
   }, '');
   return `{${lines}\n}`;

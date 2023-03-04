@@ -2,8 +2,8 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { cwd } from 'process';
 import applyFormat from './formatters/index.js';
-import parse from './parcers.js';
-import buildASTs from './buildASTs.js';
+import parse from './parsers.js';
+import buildDiffTree from './buildDiffTree.js';
 
 const genDiff = (filePath1, filePath2, format = 'stylish') => {
   const file1 = readFileSync(path.resolve(cwd(), filePath1));
@@ -15,9 +15,9 @@ const genDiff = (filePath1, filePath2, format = 'stylish') => {
   const object1 = parse(file1, fileType1);
   const object2 = parse(file2, fileType2);
 
-  const ASTs = buildASTs(object1, object2);
+  const diffTree = buildDiffTree(object1, object2);
 
-  const diff = applyFormat(ASTs, format);
+  const diff = applyFormat(diffTree, format);
   return diff;
 };
 

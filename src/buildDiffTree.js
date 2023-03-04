@@ -13,10 +13,10 @@ const getKeyStatus = (key, object1, object2) => {
   return 'removed';
 };
 
-const buildASTs = (object1, object2) => {
+const buildDiffTree = (object1, object2) => {
   const keyNames = _.sortBy(_.union(_.keys(object1), _.keys(object2)));
 
-  const astTrees = keyNames.map((keyName) => {
+  const diffTree = keyNames.map((keyName) => {
     const keyStatus = getKeyStatus(keyName, object1, object2);
     switch (keyStatus) {
       case 'unchanged':
@@ -29,29 +29,29 @@ const buildASTs = (object1, object2) => {
           keyStatus,
           value1: object1[keyName],
           value2: (_.isObject(object1[keyName]) && _.isObject(object2[keyName])
-            ? buildASTs(object1[keyName], object2[keyName])
+            ? buildDiffTree(object1[keyName], object2[keyName])
             : object2[keyName]),
         };
       case 'added':
         return {
           keyName,
           keyStatus,
-          value2: (_.isObject(object1[keyName]) && _.isObject(object2[keyName])
-            ? buildASTs(object1[keyName], object2[keyName])
+          value: (_.isObject(object1[keyName]) && _.isObject(object2[keyName])
+            ? buildDiffTree(object1[keyName], object2[keyName])
             : object2[keyName]),
         };
       case 'removed':
         return {
           keyName,
           keyStatus,
-          value1: object1[keyName],
+          value: object1[keyName],
         };
       default:
         throw new Error(`Unknown treeKeyStatus ${keyStatus}`);
     }
   }, {});
 
-  return astTrees;
+  return diffTree;
 };
 
-export default buildASTs;
+export default buildDiffTree;
