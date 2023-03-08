@@ -20,6 +20,7 @@ test.each(testFormats)('genDiff in %s files', (format) => {
   const diff = genDiff(filepath1, filepath2, 'json');
 
   expect(genDiff(filepath1, filepath2)).toEqual(expectedResultForStylish);
+  expect(genDiff(filepath1, filepath2, 'stylish')).toEqual(expectedResultForStylish);
   expect(genDiff(filepath1, filepath2, 'plain')).toEqual(expectedResultForPlain);
   expect(() => JSON.parse(diff)).not.toThrow();
 });
